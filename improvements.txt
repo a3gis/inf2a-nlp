@@ -1,0 +1,17 @@
+# "Simple" improvements
+
+- Handle basic negation (only a small set of negative forms, specified in the grammar). This would be relatively easy to implement: modify the question grammar and add semantic rules. e.g. "Who is not a duck?".
+
+- Extended grammar to define facts. The current version uses a very simple grammar. We could extend it to support more sentence structures, such as "John is an orange duck". We could merge the grammars for questions and for facts, allowing us to re-use some productions (AN, ...).
+
+- Extended grammar for questions. For example, yes/no questions such as "Is John a duck?". Would require to modify the grammar, semantics and the way some questions are checked.
+
+# "Advanced" improvements
+
+- Quantified facts. At the moment facts are represented by simple unary/binary predicates. However a lot arguments make use of quantification in their premises (e.g. syllogisms). By storing facts as logical expressions we could handle scenarios like "All ducks fly", "John is a duck", "Who flies?". This would also require some way to handle transitivity (e.g. john => duck, duck => flies |- john => flies). I think a simple version of this would not be too hard to implement.
+
+- Following the reflexion on quantified facts, it seems that we could use a different structure for the FactBase. For example, a graph would provide more flexiblity when querying. Also it would be very interesting to interface with existing graph fact bases, such as FreeBase, and see if we can build a system exploiting this immense source of structured knowledge.
+
+- Reflexivity. e.g. "John likes himself". A basic version should not be too hard to implement, but I sense we would run into trouble trying to determine the subject to which the reflexive pronoun is referring to in more complex sentences
+
+

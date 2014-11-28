@@ -1,0 +1,51 @@
+--- agreement_orig.py	2014-11-26 13:38:30.524294100 +0000
++++ agreement.py	2014-11-26 13:56:36.860608700 +0000
+@@ -14,11 +14,10 @@
+ 
+ # Grammar for the query language (with POS tokens as terminals):
+ 
+-from nltk import parse_cfg
+ from nltk import parse
+ from nltk import Tree
+ 
+-grammar = parse_cfg('''
++PARSE_CFG = '''
+    S     -> WHO QP QM | WHICH Nom QP QM
+    QP    -> VP | DO NP T
+    VP    -> I | T NP | BE A | BE NP | VP AND VP
+@@ -38,16 +37,32 @@
+    WHICH -> "WHICH"
+    AND   -> "AND"
+    QM    -> "?"
+-   ''')
++   '''
++
++# Handle the various NLTK versions floating around.
++try:
++    from nltk import parse_cfg
++    grammar = parse_cfg(PARSE_CFG)
++except ImportError:
++    from nltk import CFG
++    grammar = CFG.fromstring(PARSE_CFG)
+ 
+ chartpsr = parse.ChartParser(grammar)
+ 
+ def all_parses(wlist,lx):
+     """returns all possible parse trees for all possible taggings of wlist"""
+-    all = []
++    all_p = []
++
++    # Handle the various NLTK versions floating around.
++    try:
++        __parse = chartpsr.nbest_parse
++    except AttributeError:
++        __parse = chartpsr.parse_all
++
+     for tagging in tag_words(lx, wlist):
+-        all = all + chartpsr.nbest_parse(tagging)
+-    return all
++        all_p = all_p + list(__parse(tagging))
++
++    return all_p
+ 
+ # This produces parse trees of type Tree.
